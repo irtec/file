@@ -30,4 +30,4 @@ spec:
         args: ["-g", "true", "-s", "true", "-r", "true", "-m", "cluster", "-h", "127.0.0.1"]
         resources:
           requests:
-             cpu: 4000m
+             cpu: 150m
