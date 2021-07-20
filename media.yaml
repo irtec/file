@@ -26,8 +26,8 @@ spec:
       containers:
       - name: ant-media-server
         imagePullPolicy: Always
-        image: muratugureminoglu/ant:test
+        image: muratugureminoglu/ant-media-server-enterprise-k8s:test
         args: ["-g", "true", "-s", "true", "-r", "true", "-m", "cluster", "-h", "127.0.0.1"]
         resources:
           requests:
-             cpu: 150m
+             cpu: 250m
