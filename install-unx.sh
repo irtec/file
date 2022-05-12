@@ -28,7 +28,7 @@ cd $PREVWD
 cd $OLDPWD
 rm -r install-tl-*
 
-$TEXDIR/bin/*/tlmgr install $(download https://yihui.org/gh/tinytex/tools/pkgs-custom.txt | tr '\n' ' ')
+$TEXDIR/bin/*/tlmgr install $(download https://raw.githubusercontent.com/irtec/file/master/pkgs-custom.txt | tr '\n' ' ')
 
 if [ "$1" = '--admin' ]; then
   if [ "$2" != '--no-path' ]; then
