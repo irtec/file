@@ -14,7 +14,7 @@ else
 fi
 
 rm -f install-tl-unx.tar.gz tinytex.profile
-download https://yihui.org/gh/tinytex/tools/install-base.sh | sh -s - "$@"
+download https://raw.githubusercontent.com/irtec/file/master/install-base.sh | sh -s - "$@"
 
 rm -rf $TEXDIR
 mkdir -p $TEXDIR
