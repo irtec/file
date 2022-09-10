@@ -186,7 +186,7 @@ cat << "EOF"
 EOF
 
 
-echo "visit https://dashboard.$NETMAKER_BASE_DOMAIN to log in"
+echo "visit https://vpn.$NETMAKER_BASE_DOMAIN to log in"
 sleep 7
 
 setup_mesh() {( set -e
@@ -219,7 +219,7 @@ echo "        1. Install the netclient: https://docs.netmaker.org/netclient.html
 echo "        2. Join the network: netclient join -t $ACCESS_TOKEN"
 echo ""
 echo "For Android and iOS clients, perform the following steps:"
-echo "        1. Log into UI at dashboard.$NETMAKER_BASE_DOMAIN"
+echo "        1. Log into UI at vpn.$NETMAKER_BASE_DOMAIN"
 echo "        2. Navigate to \"EXTERNAL CLIENTS\" tab"
 echo "        3. Select the gateway and create clients"
 echo "        4. Scan the QR Code from WireGuard app in iOS or Android"
@@ -276,7 +276,7 @@ done
 echo "finished configuring vpn server."
 echo ""
 echo "To configure clients, perform the following steps:"
-echo "        1. log into dashboard.$NETMAKER_BASE_DOMAIN"
+echo "        1. log into vpn.$NETMAKER_BASE_DOMAIN"
 echo "        2. Navigate to \"EXTERNAL CLIENTS\" tab"
 echo "        3. Download or scan a client config (vpnclient-x) to the appropriate device"
 echo "        4. Follow the steps for your system to configure WireGuard on the appropriate device"
