@@ -50,7 +50,7 @@ elif [ -f /etc/fedora-release ]; then
 	dnf update
 fi
 
-dependencies=( "docker.io" "docker-compose" "wireguard" "jq" )
+dependencies=( "wireguard" "jq" )
 
 for dependency in ${dependencies[@]}; do
     is_installed=$(dpkg-query -W --showformat='${Status}\n' ${dependency} | grep "install ok installed")
