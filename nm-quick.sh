@@ -18,7 +18,7 @@ echo "checking for root permissions..."
 
 
 if [ $EUID -ne 0 ]; then
-   echo "This script must be run as root"
+   echo "This script must be run as root" 
    exit 1
 fi
 
@@ -50,7 +50,7 @@ elif [ -f /etc/fedora-release ]; then
 	dnf update
 fi
 
-dependencies=( "jq" )
+dependencies=( "docker.io" "docker-compose" "wireguard" "jq" )
 
 for dependency in ${dependencies[@]}; do
     is_installed=$(dpkg-query -W --showformat='${Status}\n' ${dependency} | grep "install ok installed")
@@ -163,7 +163,7 @@ elif [[ "$curlresponse" == *"left intact"* ]]; then
   break
 else
   secs=$(($i*5+10))
-  echo "    issue establishing connection...retrying in $secs seconds..."
+  echo "    issue establishing connection...retrying in $secs seconds..."       
 fi
 sleep $secs
 done
@@ -175,18 +175,20 @@ test_connection
 
 cat << "EOF"
 
-
- __   __     ______     ______   __    __     ______     __  __     ______     ______
-/\ "-.\ \   /\  ___\   /\__  _\ /\ "-./  \   /\  __ \   /\ \/ /    /\  ___\   /\  == \
-\ \ \-.  \  \ \  __\   \/_/\ \/ \ \ \-./\ \  \ \  __ \  \ \  _"-.  \ \  __\   \ \  __<
- \ \_\\"\_\  \ \_____\    \ \_\  \ \_\ \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_____\  \ \_\ \_\
-  \/_/ \/_/   \/_____/     \/_/   \/_/  \/_/   \/_/\/_/   \/_/\/_/   \/_____/   \/_/ /_/
-
+                                                                                         
+ __   __     ______     ______   __    __     ______     __  __     ______     ______    
+/\ "-.\ \   /\  ___\   /\__  _\ /\ "-./  \   /\  __ \   /\ \/ /    /\  ___\   /\  == \   
+\ \ \-.  \  \ \  __\   \/_/\ \/ \ \ \-./\ \  \ \  __ \  \ \  _"-.  \ \  __\   \ \  __<   
+ \ \_\\"\_\  \ \_____\    \ \_\  \ \_\ \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_____\  \ \_\ \_\ 
+  \/_/ \/_/   \/_____/     \/_/   \/_/  \/_/   \/_/\/_/   \/_/\/_/   \/_____/   \/_/ /_/ 
+                                                                                         													 
 
 EOF
 
 
 echo "visit https://wg.$NETMAKER_BASE_DOMAIN to log in"
+echo "visit https://grafana.$NETMAKER_BASE_DOMAIN to view metrics on grafana wg"
+echo "visit https://prometheus.$NETMAKER_BASE_DOMAIN to view metrics on prometheus" 
 sleep 7
 
 setup_mesh() {( set -e
@@ -230,7 +232,7 @@ echo "Netmaker setup is now complete. You are ready to begin using Netmaker."
 setup_vpn() {( set -e
 echo "creating vpn network (10.201.0.0/16)"
 
-curl -s -o /dev/null -d '{"addressrange":"10.201.0.0/16","netid":"vpn","defaultextclientdns":"8.8.8.8"}' -H "Authorization: Bearer $MASTER_KEY" -H 'Content-Type: application/json' https://api.${NETMAKER_BASE_DOMAIN}/api/networks
+curl -s -o /dev/null -d '{"addressrange":"10.201.0.0/16","netid":"vpn","defaultextclientdns":"10.201.255.254"}' -H "Authorization: Bearer $MASTER_KEY" -H 'Content-Type: application/json' https://api.${NETMAKER_BASE_DOMAIN}/api/networks
 
 sleep 5
 
@@ -241,9 +243,9 @@ SERVER_ID=$(jq -r '.[0].id' <<< ${curlresponse})
 
 curl -s -o /dev/null -X POST -H "Authorization: Bearer $MASTER_KEY" -H 'Content-Type: application/json' https://api.${NETMAKER_BASE_DOMAIN}/api/nodes/vpn/$SERVER_ID/createingress
 
-echo "waiting 10 seconds for server to apply configuration..."
+echo "waiting 5 seconds for server to apply configuration..."
 
-sleep 10
+sleep 5
 
 
 echo "configuring netmaker server vpn gateway..."
@@ -257,10 +259,12 @@ SERVER_ID=$(jq -r '.[0].id' <<< ${curlresponse})
 
 EGRESS_JSON=$( jq -n \
                   --arg gw "$GATEWAY_IFACE" \
-                  '{ranges: ["0.0.0.0/0","::/0"], interface: $gw}' )
+                  '{ranges: ["0.0.0.0/0"], interface: $gw}' )
 
 echo "egress json: $EGRESS_JSON"
 curl -s -o /dev/null -X POST -d "$EGRESS_JSON" -H "Authorization: Bearer $MASTER_KEY" -H 'Content-Type: application/json' https://api.${NETMAKER_BASE_DOMAIN}/api/nodes/vpn/$SERVER_ID/creategateway
+
+sleep 3
 
 echo "creating client configs..."
 
@@ -271,6 +275,7 @@ do
                   '{clientid: $clientid}' )
 
         curl -s -o /dev/null -d "$CLIENT_JSON" -H "Authorization: Bearer $MASTER_KEY" -H 'Content-Type: application/json' https://api.${NETMAKER_BASE_DOMAIN}/api/extclients/vpn/$SERVER_ID
+        sleep 2
 done
 
 echo "finished configuring vpn server."
