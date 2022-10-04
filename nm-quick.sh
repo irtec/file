@@ -50,7 +50,7 @@ elif [ -f /etc/fedora-release ]; then
 	dnf update
 fi
 
-dependencies=( "docker.io" "docker-compose" "wireguard" "jq" )
+dependencies=( "jq" )
 
 for dependency in ${dependencies[@]}; do
     is_installed=$(dpkg-query -W --showformat='${Status}\n' ${dependency} | grep "install ok installed")
@@ -133,7 +133,7 @@ echo "setting docker-compose..."
 
 mkdir -p /etc/netmaker
 
-wget -q -O /root/docker-compose.yml https://raw.githubusercontent.com/irtec/file/master/docker-compose.yml
+wget -q -O /root/docker-compose.yml https://raw.githubusercontent.com/gravitl/netmaker/master/compose/docker-compose.yml
 sed -i "s/NETMAKER_BASE_DOMAIN/$NETMAKER_BASE_DOMAIN/g" /root/docker-compose.yml
 sed -i "s/SERVER_PUBLIC_IP/$SERVER_PUBLIC_IP/g" /root/docker-compose.yml
 sed -i "s/COREDNS_IP/$COREDNS_IP/g" /root/docker-compose.yml
