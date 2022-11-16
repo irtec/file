@@ -2,5 +2,4 @@
 apt update && apt upgrade -y \
 && curl -sL 'https://apt.netmaker.org/gpg.key' | tee /etc/apt/trusted.gpg.d/netclient.asc \
 && curl -sL 'https://apt.netmaker.org/debian.deb.txt' | tee /etc/apt/sources.list.d/netclient.list \
-&& apt update \
-&& apt install netclient
+&& apt -y install netclient
